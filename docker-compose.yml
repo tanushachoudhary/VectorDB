@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  vector-db-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vector-db-api
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - APP_NAME=Vector Database Search System
+      - DEBUG=False
+      - HOST=0.0.0.0
+      - PORT=8000
+      - CHROMA_PERSIST_DIRECTORY=/app/chroma_db
+      - COLLECTION_NAME=document_chunks
+      - EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+      - EMBEDDING_DIMENSION=384
+      - CHUNK_SIZE=512
+      - CHUNK_OVERLAP=50
+    volumes:
+      - ./chroma_db:/app/chroma_db
+      - ./app:/app/app
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - vector-network
+
+networks:
+  vector-network:
+    driver: bridge
+
+      - .env
