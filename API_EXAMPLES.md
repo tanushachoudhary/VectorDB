@@ -2,9 +2,93 @@
 
 Complete examples for all API endpoints.
 
-## 1. Index Chunks - POST `/vector/index`
+## 1. Auto-Index Documents - POST `/vector/upload` 🚀
 
-Index multiple document chunks at once.
+**Automatic document processing and indexing** - upload a document and it's automatically extracted, chunked, and indexed.
+
+### Supported Formats
+- PDF files (text extraction)
+- Images (PNG, JPG, TIFF - OCR via Tesseract)
+- Text files (TXT, MD)
+
+### Basic Example
+
+```bash
+curl -X POST "http://localhost:8000/vector/upload" \
+  -F "file=@invoice.pdf" \
+  -F "user_id=user_001" \
+  -F "tags=invoice,financial,2026"
+```
+
+### Python Example
+
+```python
+import requests
+
+url = "http://localhost:8000/vector/upload"
+
+files = {'file': open('invoice.pdf', 'rb')}
+data = {
+    'user_id': 'user_001',
+    'tags': 'invoice,financial',
+    'document_id': 'invoice_001'  # Optional
+}
+
+response = requests.post(url, files=files, data=data)
+print(response.json())
+```
+
+### Response (200 OK)
+
+```json
+{
+    "status": "success",
+    "message": "Document 'invoice.pdf' uploaded and indexed successfully",
+    "document_id": "doc_abc123",
+    "user_id": "user_001",
+    "filename": "invoice.pdf",
+    "source": "pdf",
+    "total_pages": 3,
+    "total_chunks": 12,
+    "chunk_ids": ["doc_abc123_p1_c0", "doc_abc123_p1_c1", ...],
+    "extraction_time_ms": 450.5,
+    "indexing_time_ms": 120.3
+}
+```
+
+### With Custom Document ID
+
+```python
+files = {'file': open('contract.pdf', 'rb')}
+data = {
+    'user_id': 'user_002',
+    'document_id': 'contract_2026_001',  # Custom ID
+    'tags': 'contract,legal'
+}
+
+response = requests.post(url, files=files, data=data)
+```
+
+### Error Handling
+
+```python
+try:
+    response = requests.post(url, files=files, data=data)
+    response.raise_for_status()
+    result = response.json()
+    print(f"Indexed {result['total_chunks']} chunks in {result['indexing_time_ms']}ms")
+except requests.exceptions.HTTPError as e:
+    if e.response.status_code == 400:
+        print(f"Validation error: {e.response.json()['detail']}")
+    elif e.response.status_code == 500:
+        print(f"Server error: {e.response.json()['detail']}")
+```
+
+---
+
+## 2. Manual Index - POST `/vector/index`
+
+Manually index pre-processed chunks (use this if you've already extracted and chunked text).
 
 ### Basic Example
 
@@ -86,14 +170,17 @@ print(response.json())
 
 ---
 
-## 2. Semantic Search - POST `/vector/search/semantic`
+## 3. Unified Search - POST `/vector/search` 🔍
 
-Find semantically similar content.
+Single endpoint that automatically selects the best search strategy:
+- **Semantic**: Provide only `query`
+- **Metadata**: Provide only `filters`
+- **Hybrid**: Provide both `query` and `filters`
 
-### Basic Example
+### Semantic Search (Query Only)
 
 ```json
-POST /vector/search/semantic
+POST /vector/search
 
 {
     "query": "What is the invoice total and payment deadline?",
@@ -140,12 +227,12 @@ POST /vector/search/semantic
 }
 ```
 
-### Python Example
+### Python Example (Semantic)
 
 ```python
 import requests
 
-url = "http://localhost:8000/vector/search/semantic"
+url = "http://localhost:8000/vector/search"
 
 payload = {
     "query": "How much does it cost?",
@@ -169,14 +256,14 @@ for result in results["results"]:
 
 ---
 
-## 3. Metadata Search - POST `/vector/search/metadata`
+### Metadata Search (Filters Only)
 
 Filter by metadata without vector similarity.
 
-### Filter by Source
+#### Filter by Source
 
 ```json
-POST /vector/search/metadata
+POST /vector/search
 
 {
     "filters": {
@@ -186,10 +273,10 @@ POST /vector/search/metadata
 }
 ```
 
-### Filter by Tags
+#### Filter by Tags
 
 ```json
-POST /vector/search/metadata
+POST /vector/search
 
 {
     "filters": {
@@ -199,10 +286,10 @@ POST /vector/search/metadata
 }
 ```
 
-### Filter by Document
+#### Filter by Document
 
 ```json
-POST /vector/search/metadata
+POST /vector/search
 
 {
     "filters": {
@@ -213,10 +300,10 @@ POST /vector/search/metadata
 }
 ```
 
-### Combined Filters
+#### Combined Filters
 
 ```json
-POST /vector/search/metadata
+POST /vector/search
 
 {
     "filters": {
@@ -255,12 +342,12 @@ POST /vector/search/metadata
 }
 ```
 
-### Python Example
+#### Python Example (Metadata)
 
 ```python
 import requests
 
-url = "http://localhost:8000/vector/search/metadata"
+url = "http://localhost:8000/vector/search"
 
 payload = {
     "filters": {
@@ -289,14 +376,14 @@ print(f"Query time: {results['query_time_ms']}ms")
 
 ---
 
-## 4. Hybrid Search - POST `/vector/search/hybrid`
+### Hybrid Search (Query + Filters)
 
-Combine semantic search with metadata filtering.
+Combine semantic search with metadata filtering - automatically selected when you provide both.
 
-### Basic Example
+#### Basic Example
 
 ```json
-POST /vector/search/hybrid
+POST /vector/search
 
 {
     "query": "invoice amount due date",
@@ -309,7 +396,7 @@ POST /vector/search/hybrid
 }
 ```
 
-### Weights Explained
+#### Weights Explained
 
 - `weight_vector: 1.0` → Pure vector similarity (ignore metadata)
 - `weight_vector: 0.7` → 70% vector, 30% metadata (recommended)
@@ -341,12 +428,12 @@ POST /vector/search/hybrid
 }
 ```
 
-### Python Example
+#### Python Example (Hybrid)
 
 ```python
 import requests
 
-url = "http://localhost:8000/vector/search/hybrid"
+url = "http://localhost:8000/vector/search"
 
 payload = {
     "query": "payment information",
@@ -376,7 +463,7 @@ for r in results["results"]:
 
 ---
 
-## 5. Get Statistics - GET `/vector/stats`
+## 4. Get Statistics - GET `/vector/stats`
 
 Retrieve database statistics.
 
@@ -423,7 +510,7 @@ print(f"Using {stats['embedding_model']}")
 ### Empty Query
 
 ```json
-POST /vector/search/semantic
+POST /vector/search
 
 {
     "query": "",
@@ -441,7 +528,7 @@ POST /vector/search/semantic
 ### Invalid top_k
 
 ```json
-POST /vector/search/semantic
+POST /vector/search
 
 {
     "query": "test",
@@ -462,12 +549,29 @@ POST /vector/search/semantic
 }
 ```
 
+### Missing Required Parameters
+
+```json
+POST /vector/search
+
+{
+    "top_k": 5
+}
+```
+
+**Response (400 Bad Request)**:
+```json
+{
+    "detail": "Provide 'query' and/or 'filters'"
+}
+```
+
 ### Server Error
 
 **Response (500 Internal Server Error)**:
 ```json
 {
-    "detail": "Error performing semantic search"
+    "detail": "Search execution failed."
 }
 ```
 
@@ -507,29 +611,29 @@ print("Checking stats...")
 stats = requests.get(f"{BASE_URL}/vector/stats").json()
 print(f"Total chunks indexed: {stats['total_chunks']}")
 
-# 3. Semantic search
+# 3. Semantic search (query only)
 print("Semantic search...")
 results = requests.post(
-    f"{BASE_URL}/vector/search/semantic",
+    f"{BASE_URL}/vector/search",
     json={"query": "How much was paid?", "top_k": 3}
 ).json()
 
 for r in results["results"]:
     print(f"  - {r['similarity_score']}: {r['content'][:50]}")
 
-# 4. Metadata search
+# 4. Metadata search (filters only)
 print("Metadata search...")
 results = requests.post(
-    f"{BASE_URL}/vector/search/metadata",
+    f"{BASE_URL}/vector/search",
     json={"filters": {"tags": ["invoice"]}, "top_k": 5}
 ).json()
 
 print(f"  Found {results['total_results']} invoices")
 
-# 5. Hybrid search
+# 5. Hybrid search (query + filters)
 print("Hybrid search...")
 results = requests.post(
-    f"{BASE_URL}/vector/search/hybrid",
+    f"{BASE_URL}/vector/search",
     json={
         "query": "invoice payment",
         "filters": {"source": "pdf"},
