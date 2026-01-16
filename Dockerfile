@@ -19,10 +19,15 @@ ENV PYTHONUNBUFFERED=1 \
 # slim base has apt-get
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
+    #postgreSQL client library headers
     libpq-dev \
+    # file type identification library
     libmagic1 \
+    # Tesseract OCR engine
     tesseract-ocr \
+    # Clean up apt cache to reduce image size
     && rm -rf /var/lib/apt/lists/* \
+    # Clean up cached package files
     && apt-get clean
 
 # Copy requirements first (leverages Docker layer caching - changes less frequently)
@@ -38,7 +43,7 @@ COPY . .
 # Create persistent directory
 RUN mkdir -p /app/chroma_db
 
-# Expose port
+# tells docker that the container listens on the specified network ports at runtime
 EXPOSE 8000
 
 # Health check

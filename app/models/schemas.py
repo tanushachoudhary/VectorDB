@@ -175,7 +175,6 @@ class HybridSearchRequest(BaseModel):
             }
         }
 
-# Add this at the bottom of app/models/schemas.py
 from typing import Union
 
 # This defines SearchRequest as any of the three specific types

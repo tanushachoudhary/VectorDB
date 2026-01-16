@@ -29,6 +29,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/health")
+async def health_check():
+    """Health check endpoint."""
+    return {
+        "status": "healthy",
+        "service": settings.app_name
+    }
+    
 # Include routes
 app.include_router(router)
 
@@ -56,10 +64,3 @@ async def shutdown_event():
 #     }
 
 
-# @app.get("/health")
-# async def health_check():
-#     """Health check endpoint."""
-#     return {
-#         "status": "healthy",
-#         "service": settings.app_name
-#     }

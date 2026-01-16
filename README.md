@@ -1,6 +1,6 @@
 # Vector Database & Metadata-Driven Search System
 
-A production-ready vector database system that stores document embeddings along with rich metadata, supports multiple search patterns, and provides low-latency retrieval using FastAPI and Chroma.
+A production-ready vector database system that stores document embeddings along with rich metadata, supports multiple search patterns, and provides low-latency retrieval using FastAPI and ChromaDB.
 
 ## Objectives
 
@@ -34,9 +34,7 @@ A production-ready vector database system that stores document embeddings along 
 ├─────────────────────────────────────────────────────────────────┤
 │  API Layer (routes.py)                                          │
 │  - /vector/index          POST                                  │
-│  - /vector/search/semantic    POST                              │
-│  - /vector/search/metadata    POST                              │
-│  - /vector/search/hybrid      POST                              │
+│  - /vector/search/        POST                                  │
 │  - /vector/stats          GET                                   │
 ├─────────────────────────────────────────────────────────────────┤
 │  Service Layer (vector_service.py)                              │
@@ -51,7 +49,7 @@ A production-ready vector database system that stores document embeddings along 
 │  Data Layer                                                     │
 │  - Chroma Vector DB (persistent storage)                        │
 │  - HNSW Index (Hierarchical Navigable Small World)              │
-│  - DuckDB+Parquet Backend                                       │
+│  - DuckDB + Parquet Backend                                     │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -141,7 +139,7 @@ Chunk 3: "...H I J K..." (chars 924-1436)
 - Space Complexity: O(n * d) where n=chunks, d=dimension(384)
 
 ```python
-POST /vector/search/semantic
+POST /vector/search
 {
     "query": "invoice amount",
     "top_k": 5
@@ -157,7 +155,7 @@ POST /vector/search/semantic
 - Supports filters: source, page_number, tags, document_id, user_id
 
 ```python
-POST /vector/search/metadata
+POST /vector/search
 {
     "filters": {
         "source": "pdf",
@@ -177,7 +175,7 @@ POST /vector/search/metadata
 - More precise results by combining both approaches
 
 ```python
-POST /vector/search/hybrid
+POST /vector/search
 {
     "query": "invoice amount",
     "filters": {

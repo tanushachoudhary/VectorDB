@@ -21,9 +21,7 @@ The Vector Database & Metadata-Driven Search System is a production-ready backen
 
 **Components**:
 - `/vector/index` - Index document chunks
-- `/vector/search/semantic` - Vector similarity search
-- `/vector/search/metadata` - Metadata-based filtering
-- `/vector/search/hybrid` - Combined search
+- `/vector/search/`- Vector similarity search or Metadata-based filtering or Combined(hybrid) search
 - `/vector/stats` - Database statistics
 
 **Error Handling**:
@@ -388,7 +386,6 @@ volumes:
 
 - INFO level logging for all operations
 - Query timing in responses
-- Health check endpoint (`/health`)
 - Statistics endpoint (`/stats`)
 
 ### Recommended Additions
@@ -450,17 +447,11 @@ This system provides a robust, scalable foundation for vector-based search with 
 
 ### Key Strengths
 
-- ✅ Production-ready code
-- ✅ Clean architecture
-- ✅ Fast search performance
-- ✅ Easy to extend
-- ✅ Docker-ready
-- ✅ Well-documented
+- Production-ready code
+- Clean architecture
+- Fast search performance
+- Easy to extend
+- Docker-ready
+- Well-documented
 
-### Next Steps
 
-1. Add authentication/authorization
-2. Implement rate limiting
-3. Add comprehensive tests
-4. Set up monitoring
-5. Deploy to production
