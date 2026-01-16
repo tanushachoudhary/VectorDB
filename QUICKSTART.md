@@ -1,7 +1,5 @@
 # Quick Start Guide
 
-## 🚀 5-Minute Setup
-
 ### Option 1: Local Setup (Python 3.11)
 
 ```bash
@@ -33,7 +31,7 @@ Access: http://localhost:8000/docs
 
 ---
 
-## 📝 First Steps
+## First Steps
 
 ### Step 1: Index Your First Document
 
@@ -86,7 +84,7 @@ curl -X POST "http://localhost:8000/vector/search/metadata" \
 
 ---
 
-## 🔧 Configuration
+## Configuration
 
 Modify `.env` for custom settings:
 
@@ -105,7 +103,7 @@ EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
 
 ---
 
-## 📊 Verify Installation
+## Verify Installation
 
 Run the test suite:
 
@@ -119,7 +117,7 @@ Expected output: All tests pass ✅
 
 ---
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
 | Problem | Solution |
 |---------|----------|
@@ -129,9 +127,3 @@ Expected output: All tests pass ✅
 | Slow queries | Increase `CHUNK_SIZE` or use metadata filters |
 
 ---
-
-## Next Steps
-
-1. Read [README.md](README.md) for detailed architecture
-2. Check [API_EXAMPLES.md](API_EXAMPLES.md) for endpoint examples
-3. Explore `/docs` Swagger UI for interactive testing

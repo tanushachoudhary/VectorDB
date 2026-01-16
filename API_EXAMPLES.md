@@ -2,7 +2,7 @@
 
 Complete examples for all API endpoints.
 
-## 1. Auto-Index Documents - POST `/vector/upload` 🚀
+## 1. Auto-Index Documents - POST `/vector/upload`
 
 **Automatic document processing and indexing** - upload a document and it's automatically extracted, chunked, and indexed.
 
@@ -18,55 +18,6 @@ curl -X POST "http://localhost:8000/vector/upload" \
   -F "file=@invoice.pdf" \
   -F "user_id=user_001" \
   -F "tags=invoice,financial,2026"
-```
-
-### Python Example
-
-```python
-import requests
-
-url = "http://localhost:8000/vector/upload"
-
-files = {'file': open('invoice.pdf', 'rb')}
-data = {
-    'user_id': 'user_001',
-    'tags': 'invoice,financial',
-    'document_id': 'invoice_001'  # Optional
-}
-
-response = requests.post(url, files=files, data=data)
-print(response.json())
-```
-
-### Response (200 OK)
-
-```json
-{
-    "status": "success",
-    "message": "Document 'invoice.pdf' uploaded and indexed successfully",
-    "document_id": "doc_abc123",
-    "user_id": "user_001",
-    "filename": "invoice.pdf",
-    "source": "pdf",
-    "total_pages": 3,
-    "total_chunks": 12,
-    "chunk_ids": ["doc_abc123_p1_c0", "doc_abc123_p1_c1", ...],
-    "extraction_time_ms": 450.5,
-    "indexing_time_ms": 120.3
-}
-```
-
-### With Custom Document ID
-
-```python
-files = {'file': open('contract.pdf', 'rb')}
-data = {
-    'user_id': 'user_002',
-    'document_id': 'contract_2026_001',  # Custom ID
-    'tags': 'contract,legal'
-}
-
-response = requests.post(url, files=files, data=data)
 ```
 
 ### Error Handling
@@ -86,9 +37,9 @@ except requests.exceptions.HTTPError as e:
 
 ---
 
-## 2. Manual Index - POST `/vector/index`
+## 2. Index - POST `/vector/index`
 
-Manually index pre-processed chunks (use this if you've already extracted and chunked text).
+Manually index pre-processed chunks 
 
 ### Basic Example
 
@@ -138,39 +89,9 @@ POST /vector/index
 }
 ```
 
-### Python Example
-
-```python
-import requests
-from datetime import datetime
-
-url = "http://localhost:8000/vector/index"
-
-payload = {
-    "chunks": [
-        {
-            "chunk_id": "doc_1_chunk_0",
-            "document_id": "doc_1",
-            "user_id": "user_1",
-            "content": "Invoice details...",
-            "metadata": {
-                "source": "pdf",
-                "page_number": 1,
-                "chunk_index": 0,
-                "created_at": datetime.utcnow().isoformat(),
-                "tags": ["invoice"]
-            }
-        }
-    ]
-}
-
-response = requests.post(url, json=payload)
-print(response.json())
-```
-
 ---
 
-## 3. Unified Search - POST `/vector/search` 🔍
+## 3. Unified Search - POST `/vector/search` 
 
 Single endpoint that automatically selects the best search strategy:
 - **Semantic**: Provide only `query`
@@ -342,28 +263,6 @@ POST /vector/search
 }
 ```
 
-#### Python Example (Metadata)
-
-```python
-import requests
-
-url = "http://localhost:8000/vector/search"
-
-payload = {
-    "filters": {
-        "source": "pdf",
-        "tags": ["invoice"]
-    },
-    "top_k": 10
-}
-
-response = requests.post(url, json=payload)
-results = response.json()
-
-print(f"Found {results['total_results']} matching chunks")
-print(f"Query time: {results['query_time_ms']}ms")
-```
-
 ### Filter Combinations
 
 | Filter | Example Value | Notes |
@@ -428,31 +327,6 @@ POST /vector/search
 }
 ```
 
-#### Python Example (Hybrid)
-
-```python
-import requests
-
-url = "http://localhost:8000/vector/search"
-
-payload = {
-    "query": "payment information",
-    "filters": {
-        "source": "pdf",
-        "tags": ["invoice", "financial"]
-    },
-    "top_k": 5,
-    "weight_vector": 0.6  # Emphasize metadata
-}
-
-response = requests.post(url, json=payload)
-results = response.json()
-
-print(f"Found {results['total_results']} results")
-for r in results["results"]:
-    print(f"  - {r['chunk_id']}: {r['similarity_score']}")
-```
-
 ### When to Use Each
 
 | Search Type | Use Case | Speed | Accuracy |
@@ -486,21 +360,6 @@ GET /vector/stats
     "chunk_overlap": 50,
     "embedding_model": "sentence-transformers/all-MiniLM-L6-v2"
 }
-```
-
-### Python Example
-
-```python
-import requests
-
-url = "http://localhost:8000/vector/stats"
-response = requests.get(url)
-stats = response.json()
-
-print(f"Database has {stats['total_chunks']} chunks")
-print(f"Across {stats['total_documents']} documents")
-print(f"From {stats['total_users']} users")
-print(f"Using {stats['embedding_model']}")
 ```
 
 ---
@@ -644,17 +503,6 @@ results = requests.post(
 
 print(f"  Hybrid results: {results['total_results']}")
 ```
-
----
-
-## Rate Limiting Notes
-
-Current implementation has no rate limiting. For production, consider:
-
-- Implement IP-based rate limiting
-- Add user authentication and per-user limits
-- Use Redis for distributed rate limiting
-- Add request queuing for high load
 
 ---
 
