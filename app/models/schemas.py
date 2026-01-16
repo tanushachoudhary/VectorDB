@@ -222,6 +222,38 @@ class IndexStats(BaseModel):
         }
 
 
+class DocumentChunkingResponse(BaseModel):
+    """Response for document chunking (without indexing)."""
+    status: str
+    message: str
+    document_id: str
+    user_id: str
+    filename: str
+    source: str
+    total_pages: int
+    total_chunks: int
+    chunks: List[ChunkModel]
+    chunk_ids: List[str]
+    extraction_time_ms: float
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "status": "success",
+                "message": "Document chunked successfully",
+                "document_id": "doc_123",
+                "user_id": "user_001",
+                "filename": "invoice.pdf",
+                "source": "pdf",
+                "total_pages": 3,
+                "total_chunks": 12,
+                "chunks": [],
+                "chunk_ids": ["doc_123_p1_c0", "doc_123_p1_c1"],
+                "extraction_time_ms": 450.5
+            }
+        }
+
+
 class ErrorResponse(BaseModel):
     """Standard error response."""
     error: str
