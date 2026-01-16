@@ -102,22 +102,48 @@ Each chunk stored in the vector database contains:
 
 ### Chunking Strategy
 
-- **Chunk Size**: 512 characters (configurable)
-- **Overlap**: 50 characters (configurable)
-- **Step Size**: chunk_size - chunk_overlap = 462 characters
-- **Benefits**:
-  - Maintains context between chunks
-  - Reduces boundary loss
-  - Enables sliding window search
-  - Time Complexity: O(n) where n = text length
+**Semantic Chunking** - Intelligent chunking based on sentence embeddings and semantic similarity.
 
-Example:
+**Algorithm**:
+1. Split text at sentence boundaries (., !, ?)
+2. Generate embeddings for each sentence
+3. Calculate cosine similarity between consecutive sentences
+4. Group sentences together when similarity ≥ threshold (0.5)
+5. Create new chunk when similarity drops or size limit reached
+
+**Configuration**:
+- **Target Chunk Size**: 1000 characters (soft limit)
+- **Similarity Threshold**: 0.5 (cosine similarity)
+- **Overlap**: None (semantic boundaries are natural)
+- **Time Complexity**: O(n * e) where n = text length, e = embedding time per sentence
+
+**Benefits**:
+- Chunks respect natural language boundaries
+- Semantically related content stays together
+- Better context preservation for retrieval
+- No arbitrary mid-sentence cuts
+- More meaningful search results
+- Improved retrieval accuracy
+
+**Example**:
 ```
-Text: "A B C D E F G H I J K L M N O..."
-Chunk 1: "A B C D E..." (chars 0-512)
-Chunk 2: "...D E F G H..." (chars 462-974, 50 char overlap)
-Chunk 3: "...H I J K..." (chars 924-1436)
+Text: "Invoice #12345 dated Jan 15. The total amount is $500. 
+       Payment is due within 30 days. Late fees may apply."
+
+Chunk 1 (high similarity):
+  "Invoice #12345 dated Jan 15. The total amount is $500."
+  → Financial transaction details (semantically coherent)
+
+Chunk 2 (similarity dropped):
+  "Payment is due within 30 days. Late fees may apply."
+  → Payment terms (different semantic topic)
 ```
+
+**vs. Fixed-Size Chunking**:
+- Fixed: May split mid-sentence, losing context
+- Semantic: Preserves complete thoughts and semantic units
+- Fixed: Requires overlap to maintain context
+- Semantic: Natural boundaries eliminate need for overlap
 
 ### Embedding Model
 
@@ -436,8 +462,8 @@ Get vector database statistics.
     "total_users": 5,
     "collection_name": "document_chunks",
     "embedding_dimension": 384,
-    "chunk_size": 512,
-    "chunk_overlap": 50,
+    "chunk_size": 1000,
+    "chunk_overlap": 0,
     "embedding_model": "sentence-transformers/all-MiniLM-L6-v2"
 }
 ```
@@ -464,8 +490,9 @@ EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
 EMBEDDING_DIMENSION=384
 
 # Chunking
-CHUNK_SIZE=512      # Characters per chunk
-CHUNK_OVERLAP=50    # Overlap between chunks
+CHUNK_SIZE=1000      # Target chunk size for semantic chunking (soft limit)
+CHUNK_OVERLAP=0      # Not used in semantic chunking
+SEMANTIC_SIMILARITY_THRESHOLD=0.5  # Threshold for grouping sentences
 ```
 
 ## Performance Analysis
@@ -595,11 +622,11 @@ All endpoints return proper HTTP status codes:
 
 ## Performance Optimization Tips
 
-1. **Increase chunk overlap** for better context but slower indexing
-2. **Use smaller chunks** for faster query latency
+1. **Adjust similarity threshold** - Lower threshold (0.3-0.4) creates larger chunks, higher (0.6-0.7) creates smaller focused chunks
+2. **Use smaller target chunk size** for faster query latency but more chunks to index
 3. **Use metadata filters** to reduce vector search space
 4. **Batch indexing** for multiple documents
-5. **Monitor HNSW parameters** (available in advanced Chroma configuration)
+5. **Monitor sentence parsing** - Complex documents may need custom sentence splitting rules
 
 ## Troubleshooting
 
