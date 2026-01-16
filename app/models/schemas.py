@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any
+from typing import List, Optional
 from datetime import datetime
 
 
@@ -223,7 +223,7 @@ class IndexStats(BaseModel):
 
 
 class DocumentChunkingResponse(BaseModel):
-    """Response for document chunking (without indexing)."""
+    """Response for document chunking."""
     status: str
     message: str
     document_id: str

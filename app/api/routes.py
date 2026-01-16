@@ -5,8 +5,7 @@ import time
 import uuid
 from app.models.schemas import (
     IndexRequest, SearchResponse, IndexStats, ErrorResponse,
-    SearchRequest,
-    ChunkModel, MetadataModel, DocumentChunkingResponse
+    SearchRequest, ChunkModel, MetadataModel, DocumentChunkingResponse
 )
 from app.services.vector_service import VectorService
 from app.services.document_processor import DocumentProcessor
@@ -17,7 +16,6 @@ router = APIRouter(prefix="/vector", tags=["vector"])
 # Initialize services
 vector_service = VectorService()
 document_processor = DocumentProcessor()
-
 
 @router.post(
     "/upload",
@@ -31,10 +29,10 @@ document_processor = DocumentProcessor()
 async def upload_document(
     file: UploadFile = File(..., description="Document file (PDF, image, or text)"),
     user_id: str = Form(..., description="User ID who owns the document"),
-    tags: Optional[str] = Form(None, description="Comma-separated tags (e.g., 'invoice,financial,2026')")
+    tags: Optional[str] = Form(None, description="Comma-separated tags (e.g., 'invoice,financial,2026 etc')")
 ):
     """
-    Upload and chunk a document (without indexing).
+    Upload and chunk a document.
     
     Supports:
     - PDF files (text extraction)
