@@ -1,0 +1,49 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments / local env files
+venv/
+.env
+.env.*
+
+# Logs and temp files
+*.log
+logs/
+tmp/
+temp/
+
+# Test/coverage artifacts
+.pytest_cache/
+.cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Build & packaging
+build/
+dist/
+*.egg-info/
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# App data (vector DB persistence)
+chroma_db/
+*.sqlite3
+
+# Uploads or generated data (optional)
+uploads/
+data/

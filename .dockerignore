@@ -1,0 +1,96 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Testing
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter/IPython
+.ipynb_checkpoints/
+*.ipynb
+
+# IDE/Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# Local development
+.env
+.env.local
+.env.*.local
+*.log
+logs/
+tmp/
+temp/
+
+# Application data (use volumes for persistence)
+chroma_db/
+*.sqlite3
+uploads/
+
+# Documentation
+docs/_build/
+site/
+
+# Node (if using any frontend build)
+node_modules/
+npm-debug.log
+
+# Misc
+README.md
+QUICKSTART.md
+API_EXAMPLES.md
+DOCUMENT_UPLOAD.md
+CHUNKING_WORKFLOW.md
+ARCHITECTURE.md
+*.md
+LICENSE
+.env.example
+docker-compose.yml
+Dockerfile
+test_*.py

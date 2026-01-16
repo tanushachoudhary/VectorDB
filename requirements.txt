@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+chromadb
+sentence-transformers
+pydantic
+pydantic-settings
+python-multipart
+python-dotenv
+numpy
+pypdf
+pytesseract
+pillow
+python-magic

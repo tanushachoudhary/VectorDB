@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  vector-db-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vector-db-api
+    ports:
+      - "8000:8000"
+    # Added env_file support here if you want to use a .env file
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - APP_NAME=Vector Database Search System
+      - DEBUG=False
+      - HOST=0.0.0.0
+      - PORT=8000
+      - CHROMA_PERSIST_DIRECTORY=/app/chroma_db
+      - COLLECTION_NAME=document_chunks
+      - EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+      - EMBEDDING_DIMENSION=384
+      - CHUNK_SIZE=512
+      - CHUNK_OVERLAP=50
+    volumes:
+      - ./chroma_db:/app/chroma_db
+      - ./app:/app/app
+      - ./logs:/app/logs
+    healthcheck:
+      # OPTIMIZATION: Use curl or a simple python socket check to save memory
+      # Running 'import requests' every 30s spawns a heavy python process.
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s # Increased to give the ONNX model time to load
+    restart: unless-stopped
+    networks:
+      - vector-network
+
+networks:
+  vector-network:
+    driver: bridge
