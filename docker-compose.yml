@@ -8,6 +8,9 @@ services:
     container_name: vector-db-api
     ports:
       - "8000:8000"
+    # Added env_file support here if you want to use a .env file
+    env_file:
+      - .env
     environment:
       - PYTHONUNBUFFERED=1
       - APP_NAME=Vector Database Search System
@@ -25,11 +28,13 @@ services:
       - ./app:/app/app
       - ./logs:/app/logs
     healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      # OPTIMIZATION: Use curl or a simple python socket check to save memory
+      # Running 'import requests' every 30s spawns a heavy python process.
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 5s
+      start_period: 10s # Increased to give the ONNX model time to load
     restart: unless-stopped
     networks:
       - vector-network
@@ -37,5 +42,3 @@ services:
 networks:
   vector-network:
     driver: bridge
-
-      - .env

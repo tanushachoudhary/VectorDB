@@ -264,7 +264,6 @@ docker-compose up --build
 - `file`: Document file (required)
 - `user_id`: User ID who owns the document (required)
 - `tags`: Comma-separated tags (optional, e.g., "invoice,financial")
-- `document_id`: Custom document ID (optional, auto-generated if not provided)
 
 **cURL Example**:
 ```bash
@@ -277,17 +276,17 @@ curl -X POST "http://localhost:8000/vector/upload" \
 **Response**:
 ```json
 {
-    "status": "success",
-    "message": "Document 'invoice.pdf' uploaded and indexed successfully",
-    "document_id": "doc_a1b2c3d4e5f6",
-    "user_id": "user_001",
-    "filename": "invoice.pdf",
-    "source": "pdf",
-    "total_pages": 3,
-    "total_chunks": 12,
     "chunk_ids": ["doc_a1b2c3d4e5f6_p1_c0", "doc_a1b2c3d4e5f6_p1_c1", "..."],
+    "chunks":[],
+    "document_id": "doc_a1b2c3d4e5f6",
     "extraction_time_ms": 450.5,
-    "indexing_time_ms": 120.3
+    "filename": "invoice.pdf",
+    "message": "Document 'invoice.pdf' uploaded and indexed successfully",
+    "source": "pdf",
+    "status": "success",
+    "total_chunks": 12,
+    "total_pages": 3,
+    "user_id": "u1",
 }
 ```
 
@@ -312,16 +311,16 @@ Index document chunks into the vector database.
     "chunks": [
         {
             "chunk_id": "chunk_001",
-            "document_id": "doc_001",
-            "user_id": "user_001",
             "content": "Invoice #12345 Amount: $500.00",
+            "document_id": "doc_001",
             "metadata": {
-                "source": "pdf",
-                "page_number": 1,
                 "chunk_index": 0,
                 "created_at": "2026-01-15T10:30:00",
+                "page_number": 1,
+                "source": "pdf",
                 "tags": ["invoice", "financial"]
-            }
+            },
+            "user_id" : "user_001"
         }
     ]
 }
@@ -337,9 +336,9 @@ Index document chunks into the vector database.
 }
 ```
 
-### 2. POST `/vector/search/semantic`
+### 2. POST `/vector/search`
 
-Perform semantic similarity search.
+Perform **semantic** similarity search.
 
 **Request**:
 ```json
@@ -373,9 +372,9 @@ Perform semantic similarity search.
 }
 ```
 
-### 4. POST `/vector/search/metadata`
+### 4. POST `/vector/search`
 
-Filter documents by metadata without vector search.
+Filter documents by **metadata** without vector search.
 
 **Request**:
 ```json
@@ -399,9 +398,9 @@ Filter documents by metadata without vector search.
 }
 ```
 
-### 5. POST `/vector/search/hybrid`
+### 5. POST `/vector/search`
 
-Combine vector similarity with metadata filtering.
+Combine **vector similarity with metadata filtering**.
 
 **Request**:
 ```json
@@ -563,8 +562,8 @@ All endpoints return proper HTTP status codes:
 ## Learning Outcomes
 
 ### Vector Databases
-- Understand embedding spaces and semantic search
-- Learn HNSW indexing algorithm
+- embedding spaces and semantic search
+- HNSW indexing algorithm
 - Trade-offs between accuracy and speed
 - Metadata filtering strategies
 
