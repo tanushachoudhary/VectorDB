@@ -23,8 +23,9 @@ class Settings(BaseSettings):
     embedding_dimension: int = 384
     
     # Chunking Configuration
-    chunk_size: int = 512
-    chunk_overlap: int = 50
+    chunk_size: int = 1000  # Target chunk size for semantic chunking (soft limit)
+    chunk_overlap: int = 0  # Not used in semantic chunking
+    semantic_similarity_threshold: float = 0.5  # Similarity threshold for grouping sentences
     
     class Config:
         env_file = ".env"

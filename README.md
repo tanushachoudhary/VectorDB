@@ -87,7 +87,7 @@ Each chunk stored in the vector database contains:
 {
     "chunk_id": "doc_001_chunk_0",           # Unique identifier
     "document_id": "doc_001",                 # Parent document
-    "user_id": "user_001",                    # Document owner
+    "user_id": "u1",                    # Document owner
     "content": "...",                         # Text content
     "embedding": [...],                       # Vector (384 dims)
     "metadata": {
@@ -269,7 +269,7 @@ docker-compose up --build
 ```bash
 curl -X POST "http://localhost:8000/vector/upload" \
   -F "file=@invoice.pdf" \
-  -F "user_id=user_001" \
+  -F "user_id=u1" \
   -F "tags=invoice,financial"
 ```
 
@@ -320,7 +320,7 @@ Index document chunks into the vector database.
                 "source": "pdf",
                 "tags": ["invoice", "financial"]
             },
-            "user_id" : "user_001"
+            "user_id" : "u1"
         }
     ]
 }
@@ -355,7 +355,7 @@ Perform **semantic** similarity search.
         {
             "chunk_id": "chunk_001",
             "document_id": "doc_001",
-            "user_id": "user_001",
+            "user_id": "u1",
             "content": "Invoice #12345 Amount: $500.00",
             "metadata": {
                 "source": "pdf",
@@ -383,7 +383,7 @@ Filter documents by **metadata** without vector search.
         "source": "pdf",
         "page_number": 1,
         "tags": ["invoice"],
-        "user_id": "user_001"
+        "user_id": "u1"
     },
     "top_k": 10
 }

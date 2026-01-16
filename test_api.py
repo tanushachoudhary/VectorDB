@@ -40,7 +40,7 @@ def test_index():
             {
                 "chunk_id": "invoice_001_0",
                 "document_id": "invoice_001",
-                "user_id": "user_001",
+                "user_id": "u1",
                 "content": "Invoice #INV-2026-001\nDate: January 15, 2026\nAmount: $1500.00\nClient: Acme Corporation\nDescription: Professional Services",
                 "metadata": {
                     "source": "pdf",
@@ -53,7 +53,7 @@ def test_index():
             {
                 "chunk_id": "invoice_001_1",
                 "document_id": "invoice_001",
-                "user_id": "user_001",
+                "user_id": "u1",
                 "content": "Payment Terms: Net 30 days\nBilling Address: 123 Main St, City, State 12345\nEmail: contact@acme.com\nPhone: (555) 123-4567",
                 "metadata": {
                     "source": "pdf",

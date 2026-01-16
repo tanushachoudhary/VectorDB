@@ -16,7 +16,7 @@ Complete examples for all API endpoints.
 ```bash
 curl -X POST "http://localhost:8000/vector/upload" \
   -F "file=@invoice.pdf" \
-  -F "user_id=user_001" \
+  -F "user_id=u1" \
   -F "tags=invoice,financial,2026"
 ```
 
@@ -451,7 +451,7 @@ chunks = {
         {
             "chunk_id": "invoice_001_0",
             "document_id": "invoice_001",
-            "user_id": "user_001",
+            "user_id": "u1",
             "content": "Invoice #INV-001. Amount: $1500.00",
             "metadata": {
                 "source": "pdf",

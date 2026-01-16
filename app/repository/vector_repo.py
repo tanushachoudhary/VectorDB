@@ -55,14 +55,14 @@ class VectorRepository:
                 ids.append(chunk.chunk_id)
                 documents.append(chunk.content)
                 
-                # Serialize metadata to JSON
+                # Serialize metadata - ChromaDB requires string values for safety
                 metadata_dict = {
-                    "document_id": chunk.document_id,
-                    "user_id": chunk.user_id,
-                    "source": chunk.metadata.source,
-                    "page_number": chunk.metadata.page_number,
-                    "chunk_index": chunk.metadata.chunk_index,
-                    "created_at": chunk.metadata.created_at,
+                    "document_id": str(chunk.document_id),
+                    "user_id": str(chunk.user_id),
+                    "source": str(chunk.metadata.source),
+                    "page_number": str(chunk.metadata.page_number),
+                    "chunk_index": str(chunk.metadata.chunk_index),
+                    "created_at": str(chunk.metadata.created_at),
                     "tags": json.dumps(chunk.metadata.tags),  # JSON serialize tags
                 }
                 metadatas.append(metadata_dict)
@@ -123,11 +123,11 @@ class VectorRepository:
                     metadata_dict = results["metadatas"][0][i]
                     content = results["documents"][0][i]
                     
-                    # Reconstruct ChunkModel
+                    # Reconstruct ChunkModel - convert string metadata back to proper types
                     metadata = MetadataModel(
                             source=metadata_dict.get("source", "unknown"),
-                            page_number=metadata_dict.get("page_number", 1),
-                            chunk_index=metadata_dict.get("chunk_index", 0),
+                            page_number=int(metadata_dict.get("page_number", 1)),
+                            chunk_index=int(metadata_dict.get("chunk_index", 0)),
                             created_at=metadata_dict.get("created_at", ""),
                             tags=json.loads(metadata_dict.get("tags", "[]")) if metadata_dict.get("tags") else []
                     )
@@ -161,20 +161,20 @@ class VectorRepository:
             List of (ChunkModel, score) tuples (score = 1.0 for metadata matches)
         """
         try:
-            # Build where clause for Chroma
+            # Build where clause for Chroma - convert values to strings to match storage
             where_conditions = []
             
             if filters.source:
-                where_conditions.append({"source": {"$eq": filters.source}})
+                where_conditions.append({"source": {"$eq": str(filters.source)}})
             
             if filters.page_number is not None:
-                where_conditions.append({"page_number": {"$eq": filters.page_number}})
+                where_conditions.append({"page_number": {"$eq": str(filters.page_number)}})
             
             if filters.document_id:
-                where_conditions.append({"document_id": {"$eq": filters.document_id}})
+                where_conditions.append({"document_id": {"$eq": str(filters.document_id)}})
             
             if filters.user_id:
-                where_conditions.append({"user_id": {"$eq": filters.user_id}})
+                where_conditions.append({"user_id": {"$eq": str(filters.user_id)}})
             
             # Combine conditions with AND
             where_clause = None
@@ -196,10 +196,11 @@ class VectorRepository:
                     metadata_dict = results["metadatas"][i]
                     content = results["documents"][i]
                     
+                    # Convert string metadata back to proper types
                     metadata = MetadataModel(
                             source=metadata_dict.get("source", "unknown"),
-                            page_number=metadata_dict.get("page_number", 1),
-                            chunk_index=metadata_dict.get("chunk_index", 0),
+                            page_number=int(metadata_dict.get("page_number", 1)),
+                            chunk_index=int(metadata_dict.get("chunk_index", 0)),
                             created_at=metadata_dict.get("created_at", ""),
                             tags=json.loads(metadata_dict.get("tags", "[]")) if metadata_dict.get("tags") else []
                     )
@@ -289,16 +290,31 @@ class VectorRepository:
         try:
             count = self.collection.count()
             
-            # Get all unique document and user IDs
-            all_data = self.collection.get(include=["metadatas"])
-            
+            # Initialize with defaults
             document_ids = set()
             user_ids = set()
             
-            if all_data and all_data["metadatas"]:
-                for metadata in all_data["metadatas"]:
-                    document_ids.add(metadata.get("document_id"))
-                    user_ids.add(metadata.get("user_id"))
+            # Only query metadata if there are chunks
+            if count > 0:
+                try:
+                    # Get all unique document and user IDs
+                    all_data = self.collection.get(include=["metadatas"])
+                    
+                    if all_data and isinstance(all_data, dict) and all_data.get("metadatas"):
+                        metadatas = all_data.get("metadatas", [])
+                        if isinstance(metadatas, list):
+                            for metadata in metadatas:
+                                if isinstance(metadata, dict):
+                                    doc_id = metadata.get("document_id")
+                                    user_id = metadata.get("user_id")
+                                    
+                                    # Only add if not None or empty
+                                    if doc_id:
+                                        document_ids.add(str(doc_id))
+                                    if user_id:
+                                        user_ids.add(str(user_id))
+                except Exception as meta_error:
+                    logger.warning(f"Could not retrieve metadata for stats: {str(meta_error)}")
             
             stats = {
                 "total_chunks": count,

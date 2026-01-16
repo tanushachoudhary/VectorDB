@@ -53,7 +53,7 @@ def test_upload_text_file():
     with open(test_files["text"], "rb") as f:
         files = {"file": ("sample_invoice.txt", f, "text/plain")}
         data = {
-            "user_id": "user_001",
+            "user_id": "u1",
             "tags": "invoice,financial,2026"
         }
         

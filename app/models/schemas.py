@@ -36,7 +36,7 @@ class ChunkModel(BaseModel):
             "example": {
                 "chunk_id": "chunk_001",
                 "document_id": "doc_001",
-                "user_id": "user_001",
+                "user_id": "u1",
                 "content": "This is the extracted text content...",
                 "metadata": {
                     "source": "pdf",
@@ -60,7 +60,7 @@ class IndexRequest(BaseModel):
                     {
                         "chunk_id": "chunk_001",
                         "document_id": "doc_001",
-                        "user_id": "user_001",
+                        "user_id": "u1",
                         "content": "Invoice details...",
                         "metadata": {
                             "source": "pdf",
@@ -89,7 +89,7 @@ class SearchResult(BaseModel):
             "example": {
                 "chunk_id": "chunk_001",
                 "document_id": "doc_001",
-                "user_id": "user_001",
+                "user_id": "u1",
                 "content": "Invoice details...",
                 "metadata": {
                     "source": "pdf",
@@ -118,7 +118,7 @@ class MetadataFilter(BaseModel):
                 "page_number": 1,
                 "tags": ["invoice"],
                 "document_id": "doc_001",
-                "user_id": "user_001"
+                "user_id": "u1"
             }
         }
 
@@ -241,7 +241,7 @@ class DocumentChunkingResponse(BaseModel):
                 "status": "success",
                 "message": "Document chunked successfully",
                 "document_id": "doc_123",
-                "user_id": "user_001",
+                "user_id": "u1",
                 "filename": "invoice.pdf",
                 "source": "pdf",
                 "total_pages": 3,
@@ -287,7 +287,7 @@ class DocumentUploadResponse(BaseModel):
                 "status": "success",
                 "message": "Document uploaded and indexed successfully",
                 "document_id": "doc_123",
-                "user_id": "user_001",
+                "user_id": "u1",
                 "filename": "invoice.pdf",
                 "source": "pdf",
                 "total_pages": 3,
