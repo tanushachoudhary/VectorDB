@@ -362,7 +362,7 @@ Index document chunks into the vector database.
 }
 ```
 
-### 2. POST `/vector/search`
+### 3. POST `/vector/search`
 
 Perform **semantic** similarity search.
 
