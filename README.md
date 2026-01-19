@@ -2,6 +2,8 @@
 
 A production-ready vector database system that stores document embeddings along with rich metadata, supports multiple search patterns, and provides low-latency retrieval using FastAPI and ChromaDB.
 
+![alt text](image.png)
+
 ## Objectives
 
 - Strong understanding of vector databases and embeddings
