@@ -21,7 +21,7 @@ services:
       - COLLECTION_NAME=document_chunks
       - EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
       - EMBEDDING_DIMENSION=384
-      - CHUNK_SIZE=512
+      - CHUNK_SIZE=semantic
       - CHUNK_OVERLAP=50
     volumes:
       - ./chroma_db:/app/chroma_db

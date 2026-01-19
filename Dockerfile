@@ -1,4 +1,4 @@
-FROM python:3.11-slim 
+FROM python:3.11-slim-bookworm
 # balance between size and compatibility
 
 # Set working directory
@@ -15,20 +15,20 @@ ENV PYTHONUNBUFFERED=1 \
     # skips checking for newer pip version
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# Install system dependencies in single RUN (reduces layers)
-# slim base has apt-get
-RUN apt-get update && apt-get install -y --no-install-recommends \
+    # Install system dependencies in single RUN (reduces layers)
+    # slim base has apt-get
+    RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
     gcc \
-    #postgreSQL client library headers
-    libpq-dev \
     # file type identification library
     libmagic1 \
     # Tesseract OCR engine
     tesseract-ocr \
-    # Clean up apt cache to reduce image size
-    && rm -rf /var/lib/apt/lists/* \
+    tesseract-ocr-eng \
     # Clean up cached package files
-    && apt-get clean
+    && apt-get clean \
+    # Clean up apt cache to reduce image size
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first (leverages Docker layer caching - changes less frequently)
 COPY requirements.txt .

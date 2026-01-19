@@ -719,7 +719,7 @@ print(stats.json())
 
 - [Chroma Documentation](https://docs.trychroma.com/)
 - [Sentence Transformers](https://www.sbert.net/)
-- [HNSW Algorithm Paper](https://arxiv.org/abs/1802.02413)
+- [HNSW Algorithm Paper](https://arxiv.org/abs/1603.09320)
 - [FastAPI Documentation](https://fastapi.tiangolo.com/)
 
 ## License

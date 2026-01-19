@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings
 from pathlib import Path
+from typing import Union
 
 
 class Settings(BaseSettings):
@@ -23,7 +24,7 @@ class Settings(BaseSettings):
     embedding_dimension: int = 384
     
     # Chunking Configuration
-    chunk_size: int = 1000  # Target chunk size for semantic chunking (soft limit)
+    chunk_size: Union[int, str] = 1000  # Can be int or "semantic" for semantic chunking
     chunk_overlap: int = 0  # Not used in semantic chunking
     semantic_similarity_threshold: float = 0.5  # Similarity threshold for grouping sentences
     
