@@ -87,7 +87,7 @@ The Vector Database & Metadata-Driven Search System is a production-ready backen
 - `ChunkModel` - Document chunk with metadata
 - `MetadataModel` - Rich metadata for chunks
 - `SearchResult` - Search result format
-- `*Request` - Request schemas for validation
+- `Request` - Request schemas for validation
 - `SearchResponse` - Standardized response format
 
 ## Database Design
