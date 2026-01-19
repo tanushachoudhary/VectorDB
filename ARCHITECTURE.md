@@ -212,11 +212,11 @@ Multiple Tags: O(n) JSON array scan
 ### Chosen Model: `sentence-transformers/all-MiniLM-L6-v2`
 
 **Why This Model?**
-- ✅ Fast inference (5000 sentences/sec)
-- ✅ Good accuracy (semantic understanding)
-- ✅ Small size (33 MB)
-- ✅ Production-ready
-- ✅ 384 dimensions (good balance)
+- Fast inference (5000 sentences/sec)
+- Good accuracy (semantic understanding)
+- Small size (33 MB)
+- Production-ready
+- 384 dimensions (good balance)
 
 **Trade-offs Considered**:
 - Larger models: Better accuracy, slower, more memory
@@ -350,10 +350,10 @@ volumes:
 
 ### Current Implementation
 
-- ✅ Input validation (Pydantic)
-- ✅ Proper HTTP error codes
-- ⚠️ No authentication (add if needed)
-- ⚠️ CORS open (restrict for production)
+- Input validation (Pydantic)
+- Proper HTTP error codes
+- No authentication (add if needed)
+- CORS open (restrict for production)
 
 ### Recommended Additions
 
