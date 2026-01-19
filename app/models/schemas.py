@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional,Union
 from datetime import datetime
 
 
@@ -175,7 +175,6 @@ class HybridSearchRequest(BaseModel):
             }
         }
 
-from typing import Union
 
 # This defines SearchRequest as any of the three specific types
 SearchRequest = Union[HybridSearchRequest, SemanticSearchRequest, MetadataSearchRequest]
@@ -202,7 +201,7 @@ class IndexStats(BaseModel):
     total_users: int
     collection_name: str
     embedding_dimension: int
-    chunk_size: int
+    chunk_size: Union[int, str]
     chunk_overlap: int
     embedding_model: str
     
