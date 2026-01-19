@@ -1,11 +1,10 @@
-from typing import List, Tuple, Dict, Any
+from typing import List, Dict, Any
 from datetime import datetime
-from app.models.schemas import SearchRequest
+from app.models.schemas import SearchRequest,SearchResult
 from app.models.schemas import (ChunkModel, MetadataModel)
 from app.repository.vector_repo import VectorRepository
 from app.services.chunking_service import ChunkingService
 from app.services.embedding_service import EmbeddingService
-from app.models.schemas import SearchResult, SearchRequest 
 import logging
 import time
 
