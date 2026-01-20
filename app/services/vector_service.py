@@ -27,7 +27,7 @@ class VectorService:
         content: str,
         source: str = "pdf",
         page_number: int = 1,
-        tags: List[str] = None
+        tags: List[str] = None # type: ignore
     ) -> Dict[str, Any]:
         """
         Index a complete document by chunking and embedding.

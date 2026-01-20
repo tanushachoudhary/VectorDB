@@ -23,6 +23,11 @@ class VectorRepository:
         self.collection = self._get_or_create_collection()
         logger.info(f"Vector repository initialized with collection: {settings.collection_name}")
     
+    
+    """
+    ensures a dedicated collection exists. It specifically configures the distance metric to cosine similarity via the hnsw:space metadata.
+    Chroma uses the Hierarchical Navigable Small World (HNSW) algorithm by default to enable low-latency, high-speed vector retrieval.
+    """
     def _get_or_create_collection(self):
         """Get or create the collection."""
         collection = self.client.get_or_create_collection(
@@ -112,30 +117,31 @@ class VectorRepository:
             
             # Convert distances to similarity scores (cosine distance to similarity)
             # distance in [0, 2], similarity = 1 - (distance / 2)
+            # ensures the score stays within the range of [0, 1], where 1.0 is a perfect match.
             search_results = []
             
             if results and results["ids"] and results["ids"][0]:
                 for i, chunk_id in enumerate(results["ids"][0]):
-                    distance = results["distances"][0][i]
+                    distance = results["distances"][0][i] # type: ignore
                     # Convert cosine distance to similarity score
                     similarity_score = 1 - (distance / 2)
                     
-                    metadata_dict = results["metadatas"][0][i]
-                    content = results["documents"][0][i]
+                    metadata_dict = results["metadatas"][0][i] # type: ignore
+                    content = results["documents"][0][i] # type: ignore
                     
                     # Reconstruct ChunkModel - convert string metadata back to proper types
                     metadata = MetadataModel(
-                            source=metadata_dict.get("source", "unknown"),
+                            source=metadata_dict.get("source", "unknown"), # type: ignore
                             page_number=int(metadata_dict.get("page_number", 1)),
                             chunk_index=int(metadata_dict.get("chunk_index", 0)),
-                            created_at=metadata_dict.get("created_at", ""),
-                            tags=json.loads(metadata_dict.get("tags", "[]")) if metadata_dict.get("tags") else []
+                            created_at=metadata_dict.get("created_at", ""), # type: ignore
+                            tags=json.loads(metadata_dict.get("tags", "[]")) if metadata_dict.get("tags") else [] # type: ignore
                     )
                     
                     chunk = ChunkModel(
                         chunk_id=chunk_id,
-                            document_id=metadata_dict.get("document_id", ""),
-                            user_id=metadata_dict.get("user_id", ""),
+                        document_id=metadata_dict.get("document_id", ""), # type: ignore
+                        user_id=metadata_dict.get("user_id", ""), # type: ignore
                         content=content,
                         metadata=metadata
                     )
@@ -183,7 +189,7 @@ class VectorRepository:
             
             # Query with filters
             results = self.collection.get(
-                where=where_clause,
+                where=where_clause, # type: ignore
                 limit=top_k,
                 include=["documents", "metadatas"]
             )
@@ -193,22 +199,22 @@ class VectorRepository:
             
             if results and results["ids"]:
                 for i, chunk_id in enumerate(results["ids"]):
-                    metadata_dict = results["metadatas"][i]
-                    content = results["documents"][i]
+                    metadata_dict = results["metadatas"][i] # type: ignore
+                    content = results["documents"][i] # type: ignore
                     
                     # Convert string metadata back to proper types
                     metadata = MetadataModel(
-                            source=metadata_dict.get("source", "unknown"),
+                            source=metadata_dict.get("source", "unknown"),# type: ignore
                             page_number=int(metadata_dict.get("page_number", 1)),
                             chunk_index=int(metadata_dict.get("chunk_index", 0)),
-                            created_at=metadata_dict.get("created_at", ""),
-                            tags=json.loads(metadata_dict.get("tags", "[]")) if metadata_dict.get("tags") else []
+                            created_at=metadata_dict.get("created_at", ""), # type: ignore
+                            tags=json.loads(metadata_dict.get("tags", "[]")) if metadata_dict.get("tags") else [] # type: ignore
                     )
                     
                     chunk = ChunkModel(
                         chunk_id=chunk_id,
-                            document_id=metadata_dict.get("document_id", ""),
-                            user_id=metadata_dict.get("user_id", ""),
+                            document_id=metadata_dict.get("document_id", ""), # type: ignore
+                            user_id=metadata_dict.get("user_id", ""), # type: ignore
                         content=content,
                         metadata=metadata
                     )

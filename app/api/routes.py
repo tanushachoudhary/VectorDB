@@ -53,8 +53,8 @@ async def upload_document(
         # Extract text
         extraction_result = document_processor.extract_text_from_file(
             file_content,
-            file.filename,
-            file.content_type
+            file.filename, # type: ignore
+            file.content_type # type: ignore
         )
         
         extraction_time_ms = (time.time() - extraction_start) * 1000
