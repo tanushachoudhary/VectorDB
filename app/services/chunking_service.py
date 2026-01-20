@@ -1,5 +1,5 @@
 """
-1. first break text into sentences uses reges pattern (?<=[.!?])\s+ to ensure splits on punctuation followed by space
+1. first break text into sentences uses regex pattern (?<=[.!?])\s+ to ensure splits on punctuation followed by space
 
 2. each sentence passed through sentence transformer (embedding model) to get vector representation
 
